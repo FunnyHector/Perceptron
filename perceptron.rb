@@ -7,18 +7,26 @@ class Perceptron
     @num_connected_pixels = num_connected_pixels
     @max_epochs           = max_epochs
     @learning_rate        = learning_rate
-    @random_seed          = random_seed
+    @random_generator     = random_seed.nil? ? Random.new : Random.new(random_seed)
 
     sample_image = @training_images.first
     width  = sample_image.width
     height = sample_image.height
 
     # put in a dummy feature first
-    @features = [Feature.new(true, num_connected_pixels, width, height, random_seed)]
+    @features = [DummyFeature.new({}, random_weight)]
 
     # then the features
     num_features.times do
-      @features << Feature.new(false, num_connected_pixels, width, height, random_seed)
+      connections = {}
+
+      # randomly generate connected pixels
+      num_connected_pixels.times do
+        coordinate = [random_int(width), random_int(height)]
+        connections[coordinate] = random_boolean
+      end
+
+      @features << Feature.new(connections, random_weight)
     end
   end
 
@@ -26,7 +34,7 @@ class Perceptron
     epoch = 0
     no_more_converging = false
 
-    until always_correct? || no_more_converging || epoch > @max_epochs
+    until always_correct? || no_more_converging || epoch >= @max_epochs
       no_more_converging = true
 
       @training_images.each do |image|
@@ -39,14 +47,24 @@ class Perceptron
           no_more_converging = false unless value_of_feature.zero?
 
           if image.yes_class?
-            feature.weight -= value_of_feature * @learning_rate
-          elsif image.other_class?
             feature.weight += value_of_feature * @learning_rate
+          elsif image.other_class?
+            feature.weight -= value_of_feature * @learning_rate
           end
         end
       end
 
       epoch += 1
+
+      # ========= test =============
+      puts "========= epoch: #{epoch} ============="
+
+      weights = @features.map do |feature|
+        feature.weight.to_s
+      end.join(" | ")
+
+      puts weights
+      puts "=================================="
     end
   end
 
@@ -56,8 +74,6 @@ class Perceptron
     @training_images.each do |image|
       puts "#{image.given_class} -- #{image.classified_class}"
     end
-
-
   end
 
   private
@@ -67,10 +83,22 @@ class Perceptron
   end
 
   def value_on(image)
-    @features.reduce(0) { |sum, feature| sum + feature.value_on(image) }
+    @features.reduce(0) { |sum, feature| sum + feature.weight * feature.value_on(image) }
   end
 
   def always_correct?
     @training_images.none?(&:misclassified?)
+  end
+
+  def random_boolean
+    @random_generator.rand > 0.5
+  end
+
+  def random_int(max)
+    @random_generator.rand(max.to_i)
+  end
+
+  def random_weight
+    @random_generator.rand(-1.0..1.0)
   end
 end

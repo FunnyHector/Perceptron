@@ -41,6 +41,12 @@ training_images = read_file(training_image_file)
 
 perceptron = Perceptron.new(training_images, num_features, num_connected_pixels, max_epochs, learning_rate, random_seed)
 
+puts "======= before training ==========="
+
+perceptron.test
+
+puts "=========================="
+
 perceptron.train
 
 
