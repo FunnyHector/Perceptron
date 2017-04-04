@@ -49,7 +49,7 @@ class Perceptron
 
         next unless image.misclassified?
 
-        @features.each do |feature|
+        @features[1..-1].each do |feature|
           value_of_feature   = feature.value_on(image)
           no_more_converging = false unless value_of_feature.zero?
 
