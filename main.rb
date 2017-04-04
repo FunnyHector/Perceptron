@@ -133,7 +133,7 @@ if perceptron.accuracy_on_test < 1
 end
 
 # write the result into file, and print out in console
-File.write("./result.txt", output_txt)
+File.write("./sample_output.txt", output_txt)
 puts output_txt
 puts "\n=======================================================\n"
-puts "\"result.txt\" is generated.\n"
+puts "\"sample_output.txt\" is generated.\n"
