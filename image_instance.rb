@@ -1,5 +1,5 @@
 class ImageInstance
-  attr_reader :given_class, :width, :height
+  attr_reader :given_class, :width, :height, :pixels
   attr_accessor :classified_class
 
   def initialize(given_class, classified_class, width, height, pixels)
