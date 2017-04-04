@@ -73,8 +73,9 @@ output_txt << " - Seed for generating random values: #{random_seed.nil? ? "None"
 output_txt << "  # default" if random_seed == DEFAULT_RANDOM_SEED
 output_txt << "\n"
 
-# read in the training images
+# read in the training images and test images
 training_images = read_file(training_image_file)
+test_images = read_file(test_image_file)
 
 perceptron = Perceptron.new(training_images, num_features, num_connected_pixels, max_epochs, learning_rate, random_seed)
 
@@ -112,7 +113,6 @@ if perceptron.accuracy_on_training < 1
 end
 
 # now let's test it on new images
-test_images = read_file(test_image_file)
 perceptron.test(test_images)
 
 # report the accuracy on test images
