@@ -3,12 +3,13 @@ require "./feature.rb"
 class Perceptron
   attr_reader :features, :epoch, :accuracy_on_training, :accuracy_on_test
 
-  def initialize(training_images, num_features, num_connected_pixels, max_epochs, learning_rate, random_seed)
+  def initialize(training_images, num_features, num_connected_pixels, max_epochs, learning_rate, acceptable_accuracy, random_seed)
     @training_images      = training_images
     @num_features         = num_features
     @num_connected_pixels = num_connected_pixels
     @max_epochs           = max_epochs
     @learning_rate        = learning_rate
+    @acceptable_accuracy  = acceptable_accuracy
     @random_generator     = random_seed.nil? ? Random.new : Random.new(random_seed)
 
     sample_image = @training_images.first
@@ -41,7 +42,7 @@ class Perceptron
     no_more_converging = false
     total_num          = @training_images.size
 
-    until always_correct? || no_more_converging || @epoch >= @max_epochs
+    until reached_accuracy_at?(@acceptable_accuracy, @training_images) || no_more_converging || @epoch >= @max_epochs
       no_more_converging = true
 
       @training_images.each do |image|
@@ -101,6 +102,14 @@ class Perceptron
 
   def always_correct?
     @training_images.none?(&:misclassified?)
+  end
+
+  def reached_accuracy_at?(acceptable_accuracy, instances)
+    num_incorrect = instances.count(&:misclassified?)
+    total_num     = instances.size
+    accuracy      = (total_num - num_incorrect).to_f / total_num
+
+    accuracy >= acceptable_accuracy
   end
 
   def random_boolean

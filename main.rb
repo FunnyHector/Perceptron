@@ -7,6 +7,7 @@ DEFAULT_NUM_FEATURES         = 50
 DEFAULT_NUM_CONNECTED_PIXELS = 4
 DEFAULT_MAX_EPOCHS           = 500
 DEFAULT_LEARNING_RATE        = 0.1
+DEFAULT_ACCEPTABLE_ACCURACY  = 1.0
 DEFAULT_RANDOM_SEED          = nil
 
 # define helper methods
@@ -34,13 +35,14 @@ num_features         = ARGV[2].nil? ? DEFAULT_NUM_FEATURES : ARGV[2].to_i
 num_connected_pixels = ARGV[3].nil? ? DEFAULT_NUM_CONNECTED_PIXELS : ARGV[3].to_i
 max_epochs           = ARGV[4].nil? ? DEFAULT_MAX_EPOCHS : ARGV[4].to_i
 learning_rate        = ARGV[5].nil? ? DEFAULT_LEARNING_RATE : ARGV[5].to_f
-random_seed          = ARGV[6].nil? ? DEFAULT_RANDOM_SEED : ARGV[6].to_i
+acceptable_accuracy  = ARGV[6].nil? ? DEFAULT_ACCEPTABLE_ACCURACY : ARGV[6].to_f
+random_seed          = ARGV[7].nil? ? DEFAULT_RANDOM_SEED : ARGV[7].to_i
 
 output_txt = ""
 
 # display the parameters
 if ARGV.empty?
-  output_txt << "No arguments found.\nTo provide arguments, run: ruby main.rb [training_image_file] [test_image_file] [num_features] [num_connected_pixels] [max_epochs] [learning_rate] [random_seed]\n\nRunning with default parameters:\n"
+  output_txt << "No arguments found.\nTo provide arguments, run: ruby main.rb [training_image_file] [test_image_file] [num_features] [num_connected_pixels] [max_epochs] [learning_rate] [acceptable_accuracy] [random_seed]\n\nRunning with default parameters:\n"
 else
   output_txt << "Arguments found. Running with parameters:\n"
 end
@@ -69,6 +71,10 @@ output_txt << " - Learning rate: #{learning_rate}"
 output_txt << "  # default" if learning_rate == DEFAULT_LEARNING_RATE
 output_txt << "\n"
 
+output_txt << " - Acceptable accuracy: #{acceptable_accuracy}"
+output_txt << "  # default" if acceptable_accuracy == DEFAULT_ACCEPTABLE_ACCURACY
+output_txt << "\n"
+
 output_txt << " - Seed for generating random values: #{random_seed.nil? ? "None" : random_seed}"
 output_txt << "  # default" if random_seed == DEFAULT_RANDOM_SEED
 output_txt << "\n"
@@ -77,7 +83,7 @@ output_txt << "\n"
 training_images = read_file(training_image_file)
 test_images = read_file(test_image_file)
 
-perceptron = Perceptron.new(training_images, num_features, num_connected_pixels, max_epochs, learning_rate, random_seed)
+perceptron = Perceptron.new(training_images, num_features, num_connected_pixels, max_epochs, learning_rate, acceptable_accuracy,random_seed)
 
 # print out things before training
 output_txt << "\n==================== before training ====================\n"
