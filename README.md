@@ -4,8 +4,8 @@ To use default parameters, just run "ruby main.rb".
 
 Arguments can be provided as "ruby main.rb [training_image_file] [test_image_file] [num_features] [num_connected_pixels] [max_epochs] [learning_rate] [acceptable_accuracy] [random_seed]".
 
-Example of how to run:
-(just copy it into console for convenience)
+Example of how to run (just copy it into console for convenience):
+
 % ruby main.rb image.data test_images.data 50 4 500 0.1 1.0
 
 All arguments are optional. If they are not provided, default data files and parameters will be used.
